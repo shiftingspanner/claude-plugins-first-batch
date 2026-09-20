@@ -7,19 +7,34 @@
 # Installation:
 #   pip install -r requirements.txt --break-system-packages
 #
-# Note: Versions pinned as of 2025-01-05
+# Note: Versions pinned as of 2026-09-18. allotropy is held at 0.1.55
+# deliberately (see note below) - everything else was re-pinned to the
+# latest version compatible with that pin.
 
 # Core parsing library - provides native instrument parsers
+# NOT bumped in this pass: allotropy 0.1.55 -> 0.1.145 is a 90-release
+# jump with no test coverage in this repo to confirm identical ASM
+# output, which is the one thing this file exists to guarantee. Needs a
+# scientist to validate output against known-good instrument files
+# before moving off 0.1.55.
 allotropy==0.1.55
 
 # Data manipulation and file reading
-pandas==2.0.3
+# 2.0.3 didn't even satisfy allotropy 0.1.55's own "pandas>=2.2.0"
+# requirement. Bumped to the latest 2.x - allotropy caps pandas at
+# <3.0.0, so 3.x is off the table until allotropy is upgraded too.
+pandas==2.3.3
 
 # Excel file support (required by pandas for .xlsx files)
-openpyxl==3.1.2
+openpyxl==3.1.5
 
 # PDF parsing support (for instruments that export PDFs)
-pdfplumber==0.9.0
+# SECURITY FIX: 0.9.0 pinned pdfminer.six==20221105, vulnerable to
+# CVE-2025-64512 / CVE-2025-70559 (pickle-deserialization RCE via a
+# crafted PDF) - live exposure here, since this skill's job is parsing
+# PDFs exported by instruments, i.e. untrusted external input. Bumped to
+# the latest release, which pins a patched pdfminer.six.
+pdfplumber==0.11.10
 
 # Scientific computing (optional, but recommended for advanced analysis)
 # numpy==1.24.3  # Uncomment if needed
